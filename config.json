@@ -1,0 +1,10 @@
+{
+  "auth": {
+    "deviceAuthToken": "03d37e4c-2712-40aa-b068-73393f751569",
+    "deviceID": "c3107d57-08bf-4eda-9635-28564a46a1d0",
+    "deviceURL": "https://api.goldi-labs.de"
+  },
+  "arduino": {
+    "url": "http://arduinoerdie.hopto.org"
+  }
+}
