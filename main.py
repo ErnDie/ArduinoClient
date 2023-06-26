@@ -36,7 +36,8 @@ async def main_async():
         print("Message content:", message["message"])
 
         # send get request to arduino
-        response = requests.get(url, params={"led": message["message"]})
+        arduino_url = conf["arduino"]["url"]
+        response = requests.get(arduino_url, params={"led": message["message"]})
         if response.status_code == 200:
             await messageServiceProducer.sendMessage("Success, LED was turned " + message["message"], 'info')
         else:
