@@ -22,14 +22,13 @@ async def main_async():
 
     deviceHandler = DeviceHandler()
 
-    # message service:
+
 
     messageServiceConsumer = MessageService__Consumer("message")
 
     async def onMessage(message: MessageServiceEvent):
         print("Received Message of type", message["message_type"])
         print("Message content:", message["message"])
-
 
     messageServiceConsumer.on("message", onMessage)
     deviceHandler.add_service(messageServiceConsumer)
