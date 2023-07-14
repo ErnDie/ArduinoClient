@@ -22,12 +22,7 @@ async def main_async():
 
     deviceHandler = DeviceHandler()
 
-    # --------------------------------------------------------------#
-    #   I/O                                                         #
-    # --------------------------------------------------------------#
-    # message service: errors
-    messageServiceProducer = MessageService__Producer("message")
-    deviceHandler.add_service(messageServiceProducer)
+    # message service:
 
     messageServiceConsumer = MessageService__Consumer("message")
 
@@ -35,13 +30,6 @@ async def main_async():
         print("Received Message of type", message["message_type"])
         print("Message content:", message["message"])
 
-        # send get request to arduino
-        arduino_url = conf["arduino"]["url"]
-        response = requests.get(arduino_url, params={"led": message["message"]})
-        if response.status_code == 200:
-            await messageServiceProducer.sendMessage("Success, LED was turned " + message["message"], 'info')
-        else:
-            await messageServiceProducer.sendMessage("Something went wrong: " + message["message"], 'error')
 
     messageServiceConsumer.on("message", onMessage)
     deviceHandler.add_service(messageServiceConsumer)
