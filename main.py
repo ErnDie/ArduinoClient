@@ -2,6 +2,8 @@
 
 import json
 
+from crosslab.soa_services.webcam import WebcamService__Producer, GstTrack
+
 import arduino_connection
 import asyncio
 
@@ -21,6 +23,16 @@ async def main_async():
 
     deviceHandler = DeviceHandler()
 
+    # Webcam Service
+    pipeline = "v4l2src device=/dev/video0 ! videoconvert ! x264enc ! video/x-h264,stream-format=byte-stream ! h264parse ! queue ! rtph264pay config-interval=1 pt=96 ! udpsink"
+    webcamService = WebcamService__Producer(
+        GstTrack(
+            "v4l2src device=/dev/video1 is-live=true pattern=ball ! videoconvert ! queue ! x264enc tune=zerolatency ! 'video/x-h264,level=(string)4'"
+        ),
+        "webcam")
+    deviceHandler.add_service(webcamService)
+
+    # Message Service
     messageServiceProducer = MessageService__Producer("messageP")
     deviceHandler.add_service(messageServiceProducer)
 
@@ -33,12 +45,13 @@ async def main_async():
         led_message = message_parts[0]
         protocol = message_parts[1]
         if (protocol == "TCP"):
+            print("Send message (TCP)")
             response = arduino_connection.TCPRequest(led_message)
+            print(f"Response: {response}")
             await messageServiceProducer.sendMessage(response, "info")
         if (protocol == "UDP"):
             response = arduino_connection.UDPRequest(led_message)
             await messageServiceProducer.sendMessage(response, "info")
-        arduino_connection.main(message["message"])
 
     messageServiceConsumer.on("message", onMessage)
     deviceHandler.add_service(messageServiceConsumer)

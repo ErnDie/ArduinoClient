@@ -119,15 +119,3 @@ def getRTT(timeDelta: timedelta, ntpDelayString: string):
     rtt = float(str(timeDelta.seconds) + "." + microSecondsString)
     return rtt
 
-
-def main(msg: string):
-    call = ntplib.NTPClient()
-    response = call.request('de.pool.ntp.org', version=3)
-    TCPRequest(response, msg)
-    #TCPRequest(response, "led=off")
-    #UDPRequest(response, "led=on")
-    #UDPRequest(response, "led=off")
-    #MQTTRequest(response)
-
-if __name__ == "__main__":
-    main("led=on")
