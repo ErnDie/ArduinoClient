@@ -36,7 +36,6 @@ def UDPRequest(message: string):
         sock.sendto(messagebytes, server_address)
         # Receive the response from the server (optional)
         data, server = sock.recvfrom(1024)
-        data_decoded = data.decode()
         print('Received:', data)
         return data
     finally:

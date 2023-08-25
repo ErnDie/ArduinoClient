@@ -24,8 +24,16 @@ async def main_async():
     deviceHandler = DeviceHandler()
 
     # Webcam Service
-    pipeline = "v4l2src device=/dev/video0 ! videoconvert ! video/x-raw,format=I420 ! x264enc speed-preset=ultrafast tune=zerolatency"
-    webcamService = WebcamService__Producer(GstTrack(pipeline), "webcam")
+    pipeline_new = (" ! ").join(
+                [
+                    "v4l2src device=/dev/video0",
+                    "'image/jpeg,width=640,height=480,framerate=30/1'",
+                    "v4l2jpegdec",
+                    "v4l2h264enc",
+                    "'video/x-h264,level=(string)4'",
+                ])
+    #pipeline = "v4l2src device=/dev/video0 ! videoconvert ! video/x-raw,format=I420 ! x264enc speed-preset=ultrafast tune=zerolatency"
+    webcamService = WebcamService__Producer(GstTrack(pipeline_new), "webcam")
     deviceHandler.add_service(webcamService)
 
     # Message Service
